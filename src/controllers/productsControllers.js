@@ -1,4 +1,5 @@
 import products from "../models/Productos.js";
+import Categoria from "../models/Categoria.js";
 import mongoose from "mongoose";
 
 export const createProductsController = async (productsData) => {
@@ -44,7 +45,8 @@ export const createProductsController = async (productsData) => {
 
 /* trae todos los productos de la base de datos */
 export const getAllProductsController = async () => {
-  const productos = await products.find();
+  // populate("categoria", "nombre") traerá solo el nombre de la categoría
+  const productos = await products.find().populate("categoria", "nombre");
 
   if (!productos.length) {
     const err = new Error("No hay productos disponibles");

@@ -6,12 +6,10 @@ const MotoCard = ({ moto }) => {
   const { agregarAlCarrito } = useContext(CartContext);
 
   return (
-    <div
-      
-    >
+    <div>
       <Link to={`/product/${moto.id}`}>
         <img
-          src={moto.imagen}
+          src={moto.imagenes}
           alt={moto.nombre}
           style={{ width: "100%", borderRadius: "8px" }}
         />
@@ -30,7 +28,7 @@ const MotoCard = ({ moto }) => {
           color: "white",
           borderRadius: "6px",
           cursor: "pointer",
-          border: "none"
+          border: "none",
         }}
       >
         Añadir al carrito

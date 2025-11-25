@@ -8,13 +8,16 @@ const ProductCard = ({ moto }) => {
   return (
     <div className="moto-card">
       <img
-        src={moto.imagen}
+        src={moto.imagenes?.[0] || "https://via.placeholder.com/300"}
         alt={moto.nombre}
         className="moto-card-img"
       />
 
       <h3 className="moto-card-title">{moto.nombre}</h3>
       <p className="moto-card-desc">{moto.descripcion}</p>
+      <p className="moto-card-category">
+        Categoría: {moto.categoria?.nombre || "Sin categoría"}
+      </p>
       <strong className="moto-card-price">${moto.precio}</strong>
 
       <button
@@ -28,4 +31,3 @@ const ProductCard = ({ moto }) => {
 };
 
 export default ProductCard;
-

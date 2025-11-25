@@ -1,27 +1,46 @@
 import { useSelector, useDispatch } from "react-redux";
-import { agregarCarrito, eliminarCarrito, vaciarCarrito } from "../redux/slices/motosSlice";
-import { useState } from "react";
+import {
+  incrementarCantidad,
+  disminuirCantidad,
+  eliminarCarrito,
+  vaciarCarrito,
+} from "../redux/slices/motosSlice";
+import { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import CartItem from "../components/CartItem";
 import "../style/styles.css";
 
 const Checkout = () => {
-  const carrito = useSelector(state => state.motos.carrito || []);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
+  // --- Redux: carrito y usuario
+  const carrito = useSelector((state) => state.motos.carrito);
+  const { usuario, token } = useSelector((state) => state.usuario);
+  const isLogged = !!usuario && !!token;
+
+  // --- Formulario
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [direccion, setDireccion] = useState("");
   const [compraFinalizada, setCompraFinalizada] = useState(false);
 
-  const total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
+  // --- Autorrellenar formulario si hay usuario
+  useEffect(() => {
+    if (usuario) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setNombre(usuario.nombre || "");
+      setEmail(usuario.email || "");
+    }
+  }, [usuario]);
 
-  const aumentar = (item) => {
-    dispatch(agregarCarrito(item));
-  };
+  // --- Total
+  const total = useMemo(
+    () => carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0),
+    [carrito]
+  );
 
-  const disminuir = (item) => {
-    dispatch(agregarCarrito({ ...item, cantidad: -1 }));
-  };
-
+  // --- Manejo del submit
   const handleSubmit = (e) => {
     e.preventDefault();
     if (nombre && email && direccion) {
@@ -30,6 +49,7 @@ const Checkout = () => {
     }
   };
 
+  // --- Compra finalizada
   if (compraFinalizada) {
     return (
       <div className="checkout-container">
@@ -39,55 +59,77 @@ const Checkout = () => {
     );
   }
 
-  if (carrito.length === 0) {
-    return (
-      <div className="cart-container">
-        <h2 className="cart-title">Tu carrito está vacío</h2>
-      </div>
-    );
-  }
-
   return (
     <div className="cart-container">
       <h2 className="cart-title">Tu carrito</h2>
 
-      <div className="cart-items">
-        {carrito.map(item => (
-          <div key={item.id} className="cart-item">
-            <img src={item.imagen} alt={item.nombre} className="cart-item-img" />
-            <div className="cart-item-info">
-              <h3>{item.nombre}</h3>
-              <p>Precio: ${item.precio}</p>
-              <p>Cantidad: {item.cantidad}</p>
-              <div className="cart-item-buttons">
-                <button onClick={() => aumentar(item)}>+</button>
-                <button onClick={() => disminuir(item)}>-</button>
-                <button onClick={() => dispatch(eliminarCarrito(item.id))}>Eliminar</button>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
+      {carrito.length === 0 ? (
+        <p className="cart-empty">El carrito está vacío.</p>
+      ) : (
+        <div className="cart-items">
+          {carrito.map((item) => (
+            <CartItem
+              key={item.id}
+              item={item}
+              onIncrement={(id) => dispatch(incrementarCantidad(id))}
+              onDecrement={(id) => dispatch(disminuirCantidad(id))}
+              onRemove={(id) => dispatch(eliminarCarrito(id))}
+            />
+          ))}
+        </div>
+      )}
 
       <h3 className="cart-total">Total: ${total}</h3>
 
       <div className="cart-actions">
-        <button className="btn-empty" onClick={() => dispatch(vaciarCarrito())}>Vaciar carrito</button>
+        <button className="btn-empty" onClick={() => dispatch(vaciarCarrito())}>
+          Vaciar Carrito
+        </button>
       </div>
 
-      <h2 className="checkout-title">Formulario de Compra</h2>
-      <form className="checkout-form" onSubmit={handleSubmit}>
-        <label>Nombre:</label>
-        <input type="text" value={nombre} onChange={e => setNombre(e.target.value)} required />
+      {/* --- No logueado */}
+      {!isLogged && carrito.length > 0 && (
+        <div className="login-required">
+          <h3>Debes iniciar sesión para finalizar la compra</h3>
+          <button onClick={() => navigate("/login")}>Ir al Login</button>
+        </div>
+      )}
 
-        <label>Email:</label>
-        <input type="email" value={email} onChange={e => setEmail(e.target.value)} required />
+      {/* --- Formulario solo si logueado y carrito con productos */}
+      {isLogged && carrito.length > 0 && (
+        <>
+          <h2 className="checkout-title">Formulario de Compra</h2>
+          <form className="checkout-form" onSubmit={handleSubmit}>
+            <label>Nombre:</label>
+            <input
+              type="text"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              required
+            />
 
-        <label>Dirección:</label>
-        <input type="text" value={direccion} onChange={e => setDireccion(e.target.value)} required />
+            <label>Email:</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
-        <button className="btn-checkout" type="submit">Finalizar Compra</button>
-      </form>
+            <label>Dirección:</label>
+            <input
+              type="text"
+              value={direccion}
+              onChange={(e) => setDireccion(e.target.value)}
+              required
+            />
+
+            <button className="btn-checkout" type="submit">
+              Finalizar Compra
+            </button>
+          </form>
+        </>
+      )}
     </div>
   );
 };

@@ -1,14 +1,21 @@
 import { useSelector, useDispatch } from "react-redux";
-import { agregarCarrito, eliminarCarrito, vaciarCarrito } from "../redux/slices/motosSlice";
+import {
+  incrementarCantidad,
+  disminuirCantidad,
+  eliminarCarrito,
+  vaciarCarrito,
+} from "../redux/slices/motosSlice";
+import CartItem from "../components/CartItem";
 import "../style/styles.css";
 
 const Carrito = () => {
-  const carrito = useSelector(state => state.motos.carrito);
+  const carrito = useSelector((state) => state.motos.carrito);
   const dispatch = useDispatch();
 
-  const total = carrito.reduce((acc, item) => acc + item.precio * item.cantidad, 0);
-
-  const aumentar = (item) => dispatch(agregarCarrito(item));
+  const total = carrito.reduce(
+    (acc, item) => acc + item.precio * item.cantidad,
+    0
+  );
 
   return (
     <div className="cart-container">
@@ -17,34 +24,29 @@ const Carrito = () => {
       {carrito.length === 0 ? (
         <p className="cart-empty">El carrito está vacío.</p>
       ) : (
-        <>
-          <div className="cart-items">
-            {carrito.map(item => (
-              <div key={item.id} className="cart-item">
-                <img src={item.imagen} alt={item.nombre} className="cart-item-img" />
-                <div className="cart-item-info">
-                  <h3>{item.nombre}</h3>
-                  <p>Precio: ${item.precio}</p>
-                  <p>Cantidad: {item.cantidad}</p>
-                  <div className="cart-item-buttons">
-                    <button onClick={() => aumentar(item)}>+</button>
-                    <button onClick={() => dispatch(eliminarCarrito(item.id))}>Eliminar</button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <p className="cart-total">Total: ${total}</p>
-
-          <div className="cart-actions">
-            <button className="btn-empty" onClick={() => dispatch(vaciarCarrito())}>
-              Vaciar Carrito
-            </button>
-            <button className="btn-checkout">Finalizar Compra</button>
-          </div>
-        </>
+        <div className="cart-items">
+          {carrito.map((item) => (
+            <CartItem
+              key={item.id}
+              item={item}
+              onIncrement={(id) => dispatch(incrementarCantidad(id))}
+              onDecrement={(id) => dispatch(disminuirCantidad(id))}
+              onRemove={(id) => dispatch(eliminarCarrito(id))}
+            />
+          ))}
+        </div>
       )}
+
+      <p className="cart-total">Total: ${total}</p>
+
+      <div className="cart-actions">
+        <button className="btn-empty" onClick={() => dispatch(vaciarCarrito())}>
+          Vaciar Carrito
+        </button>
+        {carrito.length > 0 && (
+          <button className="btn-checkout">Finalizar Compra</button>
+        )}
+      </div>
     </div>
   );
 };

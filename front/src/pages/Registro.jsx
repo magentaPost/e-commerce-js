@@ -1,26 +1,68 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../style/styles.css";
 
 const Registro = () => {
+  const navigate = useNavigate();
   const [nombre, setNombre] = useState("");
+  const [nombreUsuario, setNombreUsuario] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [dni, setDni] = useState("");
   const [fechaNacimiento, setFechaNacimiento] = useState("");
   const [mensaje, setMensaje] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (nombre && email && password && dni && fechaNacimiento) {
-      setMensaje(`Usuario ${nombre} registrado correctamente!`);
+    if (
+      !nombre ||
+      !nombreUsuario ||
+      !email ||
+      !password ||
+      !dni ||
+      !fechaNacimiento
+    ) {
+      setMensaje("Completa todos los campos.");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:3000/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nombre,
+          nombreUsuario,
+          email,
+          contraseña: password,
+          dni,
+          fechaNacimiento,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setMensaje(data.message || "Error al registrar usuario");
+        return;
+      }
+
+      setMensaje(`Usuario ${data.nombre} registrado correctamente!`);
+
+      // Limpiar campos
       setNombre("");
+      setNombreUsuario("");
       setEmail("");
       setPassword("");
       setDni("");
       setFechaNacimiento("");
-    } else {
-      setMensaje("Completa todos los campos.");
+
+      // Redirigir al login
+      navigate("/login");
+    } catch (error) {
+      console.error("Error de conexión:", error);
+      setMensaje("No se pudo conectar con el servidor");
     }
   };
 
@@ -34,6 +76,14 @@ const Registro = () => {
           type="text"
           value={nombre}
           onChange={(e) => setNombre(e.target.value)}
+          required
+        />
+
+        <label>Nombre Usuario:</label>
+        <input
+          type="text"
+          value={nombreUsuario}
+          onChange={(e) => setNombreUsuario(e.target.value)}
           required
         />
 

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/slices/usuarioSlice";
@@ -13,7 +12,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [mensaje, setMensaje] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email.trim() || !password.trim()) {
@@ -21,21 +20,48 @@ const Login = () => {
       return;
     }
 
-    
-    dispatch(login({ email }));
+    try {
+      const res = await fetch("http://localhost:3000/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, contraseña: password }),
+      });
 
-    setMensaje("Login exitoso!");
-    setEmail("");
-    setPassword("");
+      const data = await res.json();
 
-    navigate("/"); 
+      if (!res.ok) {
+        setMensaje(data.message || "Error al iniciar sesión");
+        return;
+      }
+
+      //  Guardar usuario y token en Redux
+      dispatch(
+        login({
+          usuario: data.data.usuario,
+          token: data.data.token,
+        })
+      );
+
+      // Guardar en localStorage
+      /*       localStorage.setItem("token", data.token);
+      localStorage.setItem("usuario", JSON.stringify(data.usuario)); */
+
+      setMensaje("Login exitoso!");
+      setEmail("");
+      setPassword("");
+
+      // APENAS LOGUEA → IR A /productos
+      navigate("/productos");
+    } catch (error) {
+      console.error("Error de conexión:", error);
+      setMensaje("No se pudo conectar con el servidor");
+    }
   };
 
   return (
     <div className="auth-container">
       <div className="auth-card">
         <h2 className="auth-title">Iniciar sesión</h2>
-
         <form onSubmit={handleSubmit} className="auth-form">
           <label>Email</label>
           <input
