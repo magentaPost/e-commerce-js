@@ -6,14 +6,11 @@ export const obtenerMotos = createAsyncThunk("motos/obtenerMotos", async () => {
   return respuesta;
 });
 
-<<<<<<< Updated upstream
-=======
 const savedCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
 
->>>>>>> Stashed changes
 const initialState = {
   lista: [],
-  carrito: [],
+  carrito: savedCarrito,
   estado: "idle",
   error: null,
 };
@@ -23,34 +20,13 @@ export const motosSlice = createSlice({
   initialState,
   reducers: {
     agregarCarrito: (state, action) => {
-<<<<<<< Updated upstream
-      const { id, cantidad = 1 } = action.payload; 
-      const existe = state.carrito.find(item => item.id === id);
-
-=======
       const { id } = action.payload;
       const existe = state.carrito.find((item) => item.id === id);
->>>>>>> Stashed changes
       if (existe) {
-        state.carrito = state.carrito
-          .map(item =>
-            item.id === id
-              ? { ...item, cantidad: Math.max(item.cantidad + cantidad, 0) }
-              : item
-          )
-          .filter(item => item.cantidad > 0); 
-      } else if (cantidad > 0) {
-        state.carrito.push({ ...action.payload, cantidad });
+        existe.cantidad += 1;
+      } else {
+        state.carrito.push({ ...action.payload, cantidad: 1 });
       }
-<<<<<<< Updated upstream
-    },
-    eliminarCarrito: (state, action) => {
-      state.carrito = state.carrito.filter(item => item.id !== action.payload);
-    },
-    vaciarCarrito: (state) => {
-      state.carrito = [];
-    }
-=======
       localStorage.setItem("carrito", JSON.stringify(state.carrito));
     },
     incrementarCantidad: (state, action) => {
@@ -78,7 +54,6 @@ export const motosSlice = createSlice({
       state.carrito = [];
       localStorage.setItem("carrito", JSON.stringify(state.carrito));
     },
->>>>>>> Stashed changes
   },
 extraReducers: (builder) => {
   builder
@@ -101,9 +76,6 @@ extraReducers: (builder) => {
 
 });
 
-<<<<<<< Updated upstream
-export const { agregarCarrito, eliminarCarrito, vaciarCarrito } = motosSlice.actions;
-=======
 export const {
   agregarCarrito,
   incrementarCantidad,
@@ -112,5 +84,4 @@ export const {
   vaciarCarrito,
 } = motosSlice.actions;
 
->>>>>>> Stashed changes
 export default motosSlice.reducer;
