@@ -9,7 +9,7 @@ const Header = () => {
      
         <Link to="/" className="header-logo-link">
           <img
-            src="/src/assets/img/logo.png"
+            src="/src/assets/img/logo.webp"
             alt="Logo NitroRiders"
             className="header-logo"
           />
