@@ -3,26 +3,29 @@ const Sidebar = ({ categorias, filtroCategoria, categoriaSeleccionada }) => {
     <aside>
       <h3>Categorías</h3>
       <ul style={{ listStyle: "none", padding: 0 }}>
+
         {categorias.map(cat => (
-          <li key={cat}>
+          <li key={cat.id}>
             <button
-              onClick={() => filtroCategoria(cat)}
+              onClick={() => filtroCategoria(cat.id)}
               style={{
                 display: "block",
                 width: "100%",
                 marginBottom: "0.5rem",
                 padding: "0.5rem",
-                backgroundColor: cat === categoriaSeleccionada ? "#222" : "#eee",
-                color: cat === categoriaSeleccionada ? "white" : "black",
+                backgroundColor:
+                  cat.id === categoriaSeleccionada ? "#222" : "#eee",
+                color: cat.id === categoriaSeleccionada ? "white" : "black",
                 border: "none",
                 borderRadius: "4px",
                 cursor: "pointer"
               }}
             >
-              {cat}
+              {cat.nombre}
             </button>
           </li>
         ))}
+
         <li>
           <button
             onClick={() => filtroCategoria(null)}
@@ -41,11 +44,10 @@ const Sidebar = ({ categorias, filtroCategoria, categoriaSeleccionada }) => {
             Todas
           </button>
         </li>
+
       </ul>
     </aside>
   );
 };
 
 export default Sidebar;
-
-

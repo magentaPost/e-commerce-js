@@ -6,11 +6,16 @@ export const obtenerMotos = createAsyncThunk("motos/obtenerMotos", async () => {
   return respuesta;
 });
 
+<<<<<<< Updated upstream
+=======
+const savedCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
+
+>>>>>>> Stashed changes
 const initialState = {
   lista: [],
   carrito: [],
   estado: "idle",
-  error: null
+  error: null,
 };
 
 export const motosSlice = createSlice({
@@ -18,9 +23,14 @@ export const motosSlice = createSlice({
   initialState,
   reducers: {
     agregarCarrito: (state, action) => {
+<<<<<<< Updated upstream
       const { id, cantidad = 1 } = action.payload; 
       const existe = state.carrito.find(item => item.id === id);
 
+=======
+      const { id } = action.payload;
+      const existe = state.carrito.find((item) => item.id === id);
+>>>>>>> Stashed changes
       if (existe) {
         state.carrito = state.carrito
           .map(item =>
@@ -32,6 +42,7 @@ export const motosSlice = createSlice({
       } else if (cantidad > 0) {
         state.carrito.push({ ...action.payload, cantidad });
       }
+<<<<<<< Updated upstream
     },
     eliminarCarrito: (state, action) => {
       state.carrito = state.carrito.filter(item => item.id !== action.payload);
@@ -39,20 +50,67 @@ export const motosSlice = createSlice({
     vaciarCarrito: (state) => {
       state.carrito = [];
     }
+=======
+      localStorage.setItem("carrito", JSON.stringify(state.carrito));
+    },
+    incrementarCantidad: (state, action) => {
+      const item = state.carrito.find((i) => i.id === action.payload);
+      if (item) item.cantidad += 1;
+      localStorage.setItem("carrito", JSON.stringify(state.carrito));
+    },
+    disminuirCantidad: (state, action) => {
+      const item = state.carrito.find((i) => i.id === action.payload);
+      if (item) {
+        item.cantidad -= 1;
+        if (item.cantidad <= 0) {
+          state.carrito = state.carrito.filter((i) => i.id !== action.payload);
+        }
+      }
+      localStorage.setItem("carrito", JSON.stringify(state.carrito));
+    },
+    eliminarCarrito: (state, action) => {
+      state.carrito = state.carrito.filter(
+        (item) => item.id !== action.payload
+      );
+      localStorage.setItem("carrito", JSON.stringify(state.carrito));
+    },
+    vaciarCarrito: (state) => {
+      state.carrito = [];
+      localStorage.setItem("carrito", JSON.stringify(state.carrito));
+    },
+>>>>>>> Stashed changes
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(obtenerMotos.pending, (state) => { state.estado = "loading"; })
-      .addCase(obtenerMotos.fulfilled, (state, action) => {
-        state.estado = "succeeded";
-        state.lista = action.payload;
-      })
-      .addCase(obtenerMotos.rejected, (state, action) => {
-        state.estado = "failed";
-        state.error = action.error.message;
-      });
-  }
+extraReducers: (builder) => {
+  builder
+    .addCase(obtenerMotos.pending, (state) => { 
+      state.estado = "loading"; 
+    })
+    .addCase(obtenerMotos.fulfilled, (state, action) => {
+      state.estado = "succeeded";
+
+      state.lista = action.payload.map(moto => ({
+        ...moto,
+        id: moto._id, 
+      }));
+    })
+    .addCase(obtenerMotos.rejected, (state, action) => {
+      state.estado = "failed";
+      state.error = action.error.message;
+    });
+}
+
 });
 
+<<<<<<< Updated upstream
 export const { agregarCarrito, eliminarCarrito, vaciarCarrito } = motosSlice.actions;
+=======
+export const {
+  agregarCarrito,
+  incrementarCantidad,
+  disminuirCantidad,
+  eliminarCarrito,
+  vaciarCarrito,
+} = motosSlice.actions;
+
+>>>>>>> Stashed changes
 export default motosSlice.reducer;

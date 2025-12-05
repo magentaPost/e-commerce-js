@@ -1,8 +1,8 @@
-
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { login } from "../redux/slices/usuarioSlice";
 import { useNavigate } from "react-router-dom";
+import { loginRequest } from "../api/auth";
 import "../style/styles.css";
 
 const Login = () => {
@@ -13,7 +13,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [mensaje, setMensaje] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email.trim() || !password.trim()) {
@@ -21,14 +21,29 @@ const Login = () => {
       return;
     }
 
-    
-    dispatch(login({ email }));
+    try {
+      const response = await loginRequest(email, password);
 
-    setMensaje("Login exitoso!");
-    setEmail("");
-    setPassword("");
+      const { usuario, token } = response.data;
 
-    navigate("/"); 
+      // ===== OBTENER EXP DESDE EL TOKEN =====
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      const tokenExpiration = payload.exp * 1000; // convertir a ms
+      // =====================================
+
+      // Guardar expiración en localStorage (el hook la usa)
+      localStorage.setItem("tokenExpiration", tokenExpiration);
+
+      // Guardar en Redux
+      dispatch(login({ usuario, token, tokenExpiration }));
+
+      setMensaje("Login exitoso!");
+      setEmail("");
+      setPassword("");
+      navigate("/welcome");
+    } catch (err) {
+      setMensaje(err.message);
+    }
   };
 
   return (
@@ -37,18 +52,24 @@ const Login = () => {
         <h2 className="auth-title">Iniciar sesión</h2>
 
         <form onSubmit={handleSubmit} className="auth-form">
-          <label>Email</label>
+          <label htmlFor="email">Email</label>
           <input
+            id="email"
+            name="email"
             type="email"
+            autoComplete="email"
             className="auth-input"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
 
-          <label>Contraseña</label>
+          <label htmlFor="password">Contraseña</label>
           <input
+            id="password"
+            name="password"
             type="password"
+            autoComplete="current-password"
             className="auth-input"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

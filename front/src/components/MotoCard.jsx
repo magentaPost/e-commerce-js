@@ -11,7 +11,7 @@ const MotoCard = ({ moto }) => {
     >
       <Link to={`/product/${moto.id}`}>
         <img
-          src={moto.imagen}
+          src={moto.imagenes}
           alt={moto.nombre}
           style={{ width: "100%", borderRadius: "8px" }}
         />

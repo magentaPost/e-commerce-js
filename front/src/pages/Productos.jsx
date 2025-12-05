@@ -4,33 +4,49 @@ import Sidebar from "../components/Sidebar.jsx";
 import ProductCard from "../components/ProductCard.jsx";
 import Paginacion from "../components/Paginacion.jsx";
 import { obtenerMotos } from "../redux/slices/motosSlice.js";
+import { obtenerCategorias } from "../redux/slices/categoriasSlice.js"; // Redux para categorías
 import "../style/styles.css";
 
 const Productos = () => {
   const dispatch = useDispatch();
-  const { lista: motos, estado, error } = useSelector(state => state.motos);
 
-  const categorias = ["Deportivas", "Naked"];
+  // Redux Motos
+  const { lista: motos, estado: estadoMotos, error: errorMotos } = useSelector(state => state.motos);
+
+  // Redux Categorías
+  const { lista: categorias, estado: estadoCategorias, error: errorCategorias } = useSelector(state => state.categorias);
+
+  // Estado local
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
   const [paginaActual, setPaginaActual] = useState(1);
-  const porPagina = 8; 
+  const porPagina = 8;
 
+  // Cargar productos (solo si estado idle)
   useEffect(() => {
-    if (estado === "idle") dispatch(obtenerMotos());
-  }, [estado, dispatch]);
+    if (estadoMotos === "idle") dispatch(obtenerMotos());
+  }, [estadoMotos, dispatch]);
 
+  // Cargar categorías (solo si estado idle)
+  useEffect(() => {
+    if (estadoCategorias === "idle") dispatch(obtenerCategorias());
+  }, [estadoCategorias, dispatch]);
+
+  // Filtrado por categoría
   const filtrarMotos = categoriaSeleccionada
     ? motos.filter(m => m.categoria === categoriaSeleccionada)
     : motos;
 
+  // Paginación
   const totalPaginas = Math.ceil(filtrarMotos.length / porPagina);
   const motosPagina = filtrarMotos.slice(
     (paginaActual - 1) * porPagina,
     paginaActual * porPagina
   );
 
-  if (estado === "loading") return <p className="loading-text">Cargando motos...</p>;
-  if (estado === "failed") return <p className="error-text">Error: {error}</p>;
+  // Loading / Error
+  if (estadoMotos === "loading" || estadoCategorias === "loading") return <p className="loading-text">Cargando...</p>;
+  if (estadoMotos === "failed") return <p className="error-text">Error: {errorMotos}</p>;
+  if (estadoCategorias === "failed") return <p className="error-text">Error: {errorCategorias}</p>;
 
   return (
     <div className="productos-layout">

@@ -1,0 +1,38 @@
+/*     Welcome     */
+
+.welcome-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  text-align: center;
+  background: #1a1a1a;
+  color: #f2f2f2;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.45);
+}
+
+.welcome-title {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.welcome-subtitle {
+  font-size: 1.2rem;
+  font-style: italic;
+  color: #ccc;
+  margin-bottom: 1.8rem;
+}
+
+.welcome-text {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 1.2rem;
+  color: #e6e6e6;
+}
+
+.welcome-text strong {
+  color: #fff;
+  font-weight: 600;
+}

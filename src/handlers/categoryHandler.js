@@ -49,14 +49,9 @@ export const createCategoriaHandler = async (req, res, next) => {
 export const getAllCategoriesHandler = async (req, res, next) => {
   try {
     // Llamada al controller que obtiene todas las categorías
-    const response = await getAllCategoriesController();
+    const { data } = await getAllCategoriesController();
 
-    // Respuesta
-    return res.status(200).json({
-      success: true,
-      message: response.message,
-      data: response.data,
-    });
+    return res.status(200).json(data);
   } catch (err) {
     // Pasar el error al middleware global
     next(err);

@@ -17,6 +17,10 @@ const NavBar = () => {
 
   return (
     <nav className="navbar" aria-label="Main navigation">
+<<<<<<< Updated upstream
+=======
+      {/* IZQUIERDA */}
+>>>>>>> Stashed changes
       <div className="navbar-left">
         <button
           className="navbar-menu-toggle"
@@ -27,6 +31,7 @@ const NavBar = () => {
           ☰
         </button>
 
+<<<<<<< Updated upstream
         
       </div>
 
@@ -46,13 +51,66 @@ const NavBar = () => {
         </li>
       </ul>
 
+=======
+        <button onClick={() => cerrarMenuYNavegar("/")}>Home</button>
+        <button onClick={() => cerrarMenuYNavegar("/productos")}>Productos</button>
+
+        {!usuario ? (
+          <>
+            <button onClick={() => cerrarMenuYNavegar("/login")}>Login</button>
+            <button onClick={() => cerrarMenuYNavegar("/registro")}>Registro</button>
+          </>
+        ) : (
+          <button onClick={handleLogout} className="btn-logout">Cerrar sesión</button>
+        )}
+      </div>
+
+      {/* CENTRO */}
+      <div className="navbar-center">
+        {usuario && <span className="navbar-user">Hola, {usuario.nombre}</span>}
+      </div>
+
+      {/* DERECHA */}
+>>>>>>> Stashed changes
       <div className="navbar-right">
         <NavLink to="/checkout" className="navbar-cart" onClick={() => setMenuAbierto(false)}>
           Carrito <span className="cart-count">({totalProductos})</span>
         </NavLink>
       </div>
 
+<<<<<<< Updated upstream
       {menuAbierto && <div className="navbar-overlay" onClick={() => setMenuAbierto(false)} />}
+=======
+      {/* MENÚ MÓVIL */}
+      {menuAbierto && (
+        <>
+          <ul className="navbar-links navbar-open">
+            <li><button onClick={() => cerrarMenuYNavegar("/")}>Home</button></li>
+            <li><button onClick={() => cerrarMenuYNavegar("/productos")}>Productos</button></li>
+
+            {!usuario ? (
+              <>
+                <li><button onClick={() => cerrarMenuYNavegar("/login")}>Login</button></li>
+                <li><button onClick={() => cerrarMenuYNavegar("/registro")}>Registro</button></li>
+              </>
+            ) : (
+              <>
+                <li><span className="nav-user">Hola, {usuario.nombre}</span></li>
+                <li><button onClick={handleLogout}>Cerrar sesión</button></li>
+              </>
+            )}
+
+            <li>
+              <NavLink to="/checkout" onClick={() => setMenuAbierto(false)}>
+                Carrito ({totalProductos})
+              </NavLink>
+            </li>
+          </ul>
+
+          <div className="navbar-overlay" onClick={() => setMenuAbierto(false)} />
+        </>
+      )}
+>>>>>>> Stashed changes
     </nav>
   );
 };

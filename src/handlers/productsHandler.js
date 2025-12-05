@@ -27,20 +27,23 @@ export const createProductsHandler = async (req, res, next) => {
   }
 };
 
-//trae todos los productos de la base de datos, o por nombre si se pasa el query
 export const getAllProductsHandler = async (req, res, next) => {
+  try {
+
+    const { data } = await getAllProductsController();
+    return res.status(200).json(data);
+
+  } catch (err) {
+    next(err);
+  }
+};
+
+//trae todos los productos de la base de datos, o por nombre si se pasa el query
+export const getProductsByNameHandler = async (req, res, next) => {
   try {
     const { nombre } = req.query;
     if (!nombre) {
-      const response = await getAllProductsController();
-
-      return res.status(200).json({
-        success: true,
-        message: response.message,
-        data: response.data,
-      });
-    } else {
-      const response = await getProductsByNameControllers(nombre);
+      const response = await getProductsByNameControllers();
 
       return res.status(200).json({
         success: true,

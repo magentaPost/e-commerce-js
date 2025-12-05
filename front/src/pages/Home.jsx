@@ -1,31 +1,43 @@
-import { useSelector } from "react-redux";
-import MotoCard from "../components/MotoCardeliminar.jsx";
-import ProductCard from "../components/ProductCard.jsx";
-import "../style/styles.css";
+import "../style/home.css";
 
 const Home = () => {
-  const motos = useSelector(state => state.motos.lista);
-
   return (
-    <div className="home-container">
-  <h2 className="home-title">Bienvenido a NitroRiders</h2>
+    <div className="banner-carousel-container">
+      <input
+        type="radio"
+        name="banner-carousel-slider"
+        id="banner-carousel-slide1"
+        defaultChecked
+      />
+      <input
+        type="radio"
+        name="banner-carousel-slider"
+        id="banner-carousel-slide2"
+      />
 
-  <p className="home-subtitle">Encendé el motor. Viví la adrenalina.</p>
+      <div className="banner-carousel-slides">
+        <div className="banner-carousel-slide">
+          <img
+            src="/src/assets/img/banner-1.webp"
+            loading="lazy"
+            alt="Banner principal"
+          />
+        </div>
 
-  <p className="home-text">
-    En <strong>NitroRiders</strong> vivimos la pasión por las motos. Somos tu tienda de confianza para encontrar motocicletas, repuestos y equipamiento pensado para elevar tu experiencia en cada ruta.
-  </p>
+        <div className="banner-carousel-slide">
+          <img
+            src="/src/assets/img/banner-2.webp"
+            loading="lazy"
+            alt="Segundo banner"
+          />
+        </div>
+      </div>
 
-  <p className="home-text">
-    Calidad, variedad y atención personalizada son parte de nuestro compromiso con cada piloto. Sabemos que detrás de cada moto hay una historia, un sueño y un destino.
-  </p>
-
-  <p className="home-text">
-    Explorá nuestro catálogo y unite a una comunidad donde la velocidad, la libertad y el estilo son parte del mismo camino.  
-    <strong>Tu próxima aventura comienza acá.</strong>
-  </p>
-</div>
-
+      <div className="banner-carousel-controls">
+        <label htmlFor="banner-carousel-slide1" aria-label="Ir al slide 1"></label>
+        <label htmlFor="banner-carousel-slide2" aria-label="Ir al slide 2"></label>
+      </div>
+    </div>
   );
 };
 

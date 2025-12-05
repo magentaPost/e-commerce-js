@@ -8,7 +8,7 @@ const ProductCard = ({ moto }) => {
   return (
     <div className="moto-card">
       <img
-        src={moto.imagen}
+        src={moto.imagenes}
         alt={moto.nombre}
         className="moto-card-img"
       />

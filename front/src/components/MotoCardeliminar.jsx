@@ -10,7 +10,7 @@ const MotoCard = ({ moto }) => {
     <div className="moto-card">
       <Link to={`/product/${moto.id}`}>
         <img
-          src={moto.imagen}
+          src={moto.imagenes}
           alt={moto.nombre}
           className="moto-card-img"
         />

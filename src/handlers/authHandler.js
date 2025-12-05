@@ -16,7 +16,7 @@ export const registerHandler = async (req, res, next) => {
     // Si hay error de validación, lo tiro para que el middleware global lo maneje
     if (error) {
       const err = new Error(error.details[0].message);
-      err.status = 409;
+      err.status = 400;
       err.name = "ValidationError";
       throw err;
     }
@@ -39,6 +39,7 @@ export const registerHandler = async (req, res, next) => {
 // Handler para login de usuario
 export const loginHandler = async (req, res, next) => {
   try {
+    
     // Valido los datos de login (email y contraseña) con Joi
     const { error, value } = validateLogin.validate(req.body, {
       stripUnknown: true,
@@ -47,7 +48,7 @@ export const loginHandler = async (req, res, next) => {
     // Si hay error de validación, lo tiro
     if (error) {
       const err = new Error(error.details[0].message);
-      err.status = 409;
+      err.status = 400;
       err.name = "ValidationError";
       throw err;
     }

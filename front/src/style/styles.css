@@ -1,4 +1,17 @@
+<<<<<<< Updated upstream
 /* Header  */
+=======
+html, body {
+
+padding: 0;
+
+margin: 0;
+
+}
+
+
+/*     HEADER     */
+>>>>>>> Stashed changes
 
 .header-container {
   display: grid;
@@ -80,6 +93,7 @@
   font-weight: 700;
 }
 
+<<<<<<< Updated upstream
 /* Hamburguesa  */
 .navbar-menu-toggle {
   display: none;
@@ -126,6 +140,8 @@
   font-weight: 600;
 }
 
+=======
+>>>>>>> Stashed changes
 
 /* sidebar */
 
